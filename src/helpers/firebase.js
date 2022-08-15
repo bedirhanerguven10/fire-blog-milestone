@@ -107,3 +107,64 @@ export const signUpProvider = (navigate) => {
       // Handle Errors here.
     });
 };
+
+export const AddBlog = (values) => {
+  console.log(values);
+  const auth = getAuth();
+
+  const db = getDatabase();
+  const blogRef = ref(db, "blogapp/");
+  const newBlogRef = push(blogRef);
+  set(newBlogRef, {
+    title: values.title,
+    imgurl: values.imgUrl,
+    content: values.content,
+    email: auth.currentUser.email,
+    creative: auth.currentUser.displayName,
+    // id: values.id,
+  });
+  toastSuccessNotify("New blog creation successful");
+
+  // console.log(auth.currentUser.email);
+};
+
+//! Get blog from database
+export const useFetch = () => {
+  const [blogGet, setBlogGet] = useState();
+  const [isLoading, setİsLoading] = useState(true);
+  useEffect(() => {
+    const db = getDatabase();
+    const blogRef = ref(db, "blogapp/");
+    onValue(blogRef, (snapshot) => {
+      const data = snapshot.val();
+      const blogArray = [];
+      for (let id in data) {
+        blogArray.push({ id, ...data[id] });
+      }
+      setBlogGet(blogArray);
+      setİsLoading(false);
+    });
+  }, []);
+  return { blogGet, isLoading };
+};
+
+//!Delete Blog
+export const deleteBlog = (id, navigate) => {
+  const db = getDatabase();
+  console.log(id);
+  remove(ref(db, `blogapp/${id}`));
+  navigate("/");
+  toastSuccessNotify("Blog successfully deleted");
+};
+//!Edit Blog
+export const EditBlogCard = (uptadeBlog, id) => {
+  const db = getDatabase();
+  // console.log(editTitle);
+  // console.log(id);
+
+  const updates = {};
+  updates["blogapp/" + id] = uptadeBlog;
+  toastSuccessNotify("Blog updated");
+
+  return update(ref(db), updates);
+};
