@@ -17,18 +17,11 @@ import { AuthContext } from "../contexts/AuthContext";
 import SearchComponent from "./SearchComponent";
 import { useState } from "react";
 
-import { makeStyles } from "@mui/styles";
 
-const useStyles = makeStyles({
-  root: {
-    color: "red",
-    border:"1px solid blue",backgroundColor: "lightbullet",
-  }
-});
 
 
 export default function BlogCard() {
-      const classes = useStyles();
+      
   const navigate = useNavigate();
   const { blogGet, isLoading } = useFetch();
   const { currentUser } = React.useContext(AuthContext);
